@@ -1,0 +1,49 @@
+main {
+    max-width: 1000px;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: #fff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border-radius: 5px;
+  }
+  h3 {
+  display: block;
+  font-size: 1.17em;
+  margin-block-start: 1em;
+  margin-block-end: 1em;
+  margin-inline-start: 0px;
+  margin-inline-end: 0px;
+  font-weight: bold;
+}
+ul{
+margin-bottom: 0;
+}
+
+  code {
+    background-color: #f8f8f8;
+    padding: 2px 5px;
+    border-radius: 3px;
+    font-family: monospace;
+  }
+
+  .token{
+    font-size: 8px;
+  }
+
+  button{
+    background-color: black;
+    margin-bottom: 5px;
+  }
+  button:hover{
+    background-color: #fff;
+  }
+
+  button:hover a:visited{
+    color: #000000;
+  }
+  button:hover a:link{
+    color: #000000;
+  }
+  button a:hover{
+    background-color: rgba(240, 255, 255, 0);
+  }

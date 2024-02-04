@@ -1,0 +1,138 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f5f5f5;
+}
+h1{
+    text-align: center;
+   
+}
+form {
+    max-width: 400px;
+    margin: 0 auto;
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+input[type="text"], input[type="password"],input[type="email"], input[type="pass"] {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+}
+input[type="submit"] {
+    width: 100%;
+    padding: 10px;
+    border: none;
+    background-color: #007bff;
+    color: #fff;
+    font-weight: bolder; 
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+input[type="submit"]:hover {
+    color:#007bff;
+    background-color: white;
+    border:1px solid #007bff;
+}
+.alert_green {
+    color: #155724;
+    background-color: #d4edda;
+    padding: 10px;
+    border-radius: 5px;
+    margin-bottom: 15px;
+    text-align: center;
+}
+.alert_red {
+    color: #721c24;
+    background-color: #f8d7da;
+    padding: 10px;
+    border-radius: 5px;
+    margin-bottom: 15px;
+    text-align: center;
+}
+.alert_orange {
+    color: #725b1c;
+    background-color: #f8ecd7;
+    padding: 10px;
+    border-radius: 5px;
+    margin-bottom: 15px;
+    text-align: center;
+}
+h6{
+    text-align: center;
+}
+
+
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+header h1 {
+    margin-right: 20px; 
+    color: white;
+}
+
+ul {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    align-items: center;
+}
+
+li {
+    margin-right: 10px; /* Ajusta el margen derecho según sea necesario */
+}
+h1 a:hover{
+    background-color:#d2d2d200 ;
+}
+
+a:visited{
+    color: white;
+    
+}
+a{
+    text-decoration: none;
+    padding: 10px;
+    border-radius: 10px;
+}
+a:hover{
+    background-color: #d2d2d256;
+}
+header {
+    background-color: #333;
+    color: white;
+    text-align: center;
+    padding: 1em;
+}
+footer{
+    margin-top: 200px;
+    background-color: #333;
+    height: 100px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+}
+footer p{
+    color: rgb(255, 255, 255);
+    text-align: center;
+}
+.registrar a:visited{
+    color: blue;
+    
+}
+.registrar a{
+    font-size: larger;
+}
