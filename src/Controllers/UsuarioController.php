@@ -34,13 +34,14 @@ class UsuarioController{
     
                 // Encriptar contraseña
                 $registrado['password'] = password_hash($registrado['password'], PASSWORD_BCRYPT, ['cost' => 4]);
-                
+    
                 // Generar un token de sesión único
                 $tokenSesion = Security::generarToken(Security::clavesecreta(), ["email"=>$_POST['data']['email']]);
                 $registrado['token'] = $tokenSesion;
-                
-                
-                
+    
+                // Establecer el tiempo de expiración del token (por ejemplo, 1 día)
+                $registrado['token_exp'] = date('Y-m-d H:i:s', strtotime("+1 day"));
+    
                 $usuario = Usuario::fromArray($registrado);
     
                 $save = $usuario->save();
@@ -63,6 +64,7 @@ class UsuarioController{
     }
 
 
+
     /*
     Maneja el proceso de inicio de sesión de usuarios.
     Verifica si el método de solicitud HTTP es POST y si se proporcionan los datos necesarios.
@@ -83,13 +85,14 @@ class UsuarioController{
     
                 // Verificar si la autenticación fue exitosa y el usuario está confirmado
                 if ($identity && is_object($identity)) {
-                    if ($usuario->getConfirmado()) {
-                        $_SESSION['register'] = 'logueado';
+                    if ($usuario->getConfirmado() ) {
+                        // Iniciar sesión y guardar los datos del usuario en la variable de sesión
                         $_SESSION['identity'] = $identity;
     
                         header("Location:" . BASE_URL . "/");
                         exit;
                     } else {
+                        // Si no está confirmado, regenerar el token
                         $tokenSesion = Security::generarToken(Security::clavesecreta(), ["email"=>$_POST['data']['email']]);
 
                         $usuarioEmail=$usuario->buscaMail($_POST['data']['email']);
@@ -104,7 +107,6 @@ class UsuarioController{
 
                         $_SESSION['register'] = 'send_confirmation';
                         $this->pages->render('usuario/login');
-                        
                     }
                 } else {
                     // La autenticación falló
@@ -148,11 +150,10 @@ class UsuarioController{
             $mail->CharSet='UTF-8';
             
             // Cuerpo del correo
-            $confirmationLink = "http://localhost/ApiRestful/";
+            $confirmationLink = "http://localhost/CSApi/usuario/confirmacion/$confirmationToken";
             $contenido = "<html>";
             $contenido .= "<p>Hola, $email</p>";
-            $contenido .= "<p>Este es el token de confirmación: $confirmationToken</p>";
-            $contenido .= "<p>Haz clic en el siguiente enlace para confirmar tu registro: <a href=$confirmationLink>Volver a la api</a></p>";
+            $contenido .= "<p>Haz clic en el siguiente enlace para confirmar tu registro: <a href=$confirmationLink>Confirmar registro</a></p>";
             $contenido .= "</html>";
             $mail->Body = $contenido;
 
@@ -172,41 +173,55 @@ class UsuarioController{
     Si se cumplen las condiciones, actualiza el registro del usuario para confirmar el registro.
     Muestra un mensaje de éxito si la confirmación del registro es exitosa; de lo contrario, indica que el correo electrónico no existe.
      */
-    public function confirmarRegistro2(): void {
+    public function confirmarRegistro2($token): void {
         try {
-            
-        $todo= Security::validateToken();
-        
-            if($todo){
-                $data=$todo["data"];
-            $usuario=new Usuario();
+            $usuario = new Usuario();
+            $userData = $usuario->buscarUsuarioPorToken($token);
+            if ($userData && is_array($userData) && isset($userData[0]['token_exp'])) {
+                $tokenExpirationTime = $userData[0]['token_exp'];
+                $currentTime = (date('Y-m-d H:i:s'));
                 
-            $usuarioEmail=$usuario->buscaMail($data->data->email);
-            
-            if($usuarioEmail && ($usuarioEmail->token==$todo["token"])){
     
-                
-                $usuario=Usuario::fromArray(["id"=>$usuarioEmail->id, "nombre"=>$usuarioEmail->nombre, "apellidos"=>$usuarioEmail->apellidos, "email"=>$usuarioEmail->email, "password"=>$usuarioEmail->password, "rol"=>$usuarioEmail->rol, "confirmado"=>true, "token"=>"", "token_exp"=>date("Y-m-d H:i:s", time()-1)]);
+                if ($tokenExpirationTime > $currentTime) {
+                    // Obtener el usuario existente de la base de datos
+                    $existingUser = new Usuario($userData[0]['id'], $userData[0]['nombre'], $userData[0]['apellidos'], $userData[0]['email'], $userData[0]['password'], $userData[0]['rol'], $userData[0]['confirmado'], $userData[0]['token'],  $tokenExpirationTime );
+                    $existingUser->setId($userData[0]['id']); // Asegúrate de establecer el ID del usuario existente
     
-                
-                $usuario->update();
+                    // Actualizar confirmado a true utilizando el método update
+                    $existingUser->setConfirmado(true);
+                    $existingUser->setToken_exp(-1);
+                    $existingUser->update($existingUser->getId());
     
-                echo "Su registro ha sido confirmado con exito";
-    
-            }else{
-            echo"No existe ese correo";
+                    $_SESSION['register'] = "confirmed";
+                   $this->pages->render('usuario/login');
+                } else {
+                    $_SESSION['register'] = "expired";
+                    $this->pages->render('usuario/login');
+
+
+                    $tokenSesion = Security::generarToken(Security::clavesecreta(), ["email"=>$userData[0]['email']]);
+
+                    $usuarioEmail=$usuario->buscaMail($userData[0]['email']);
+
+                    $usuarioEmail->token=$tokenSesion;
+
+                    $usuario=Usuario::fromArray(["id"=>$usuarioEmail->id, "nombre"=>$usuarioEmail->nombre, "apellidos"=>$usuarioEmail->apellidos, "email"=>$usuarioEmail->email, "password"=>$usuarioEmail->password, "rol"=>$usuarioEmail->rol, "confirmado"=>$usuarioEmail->confirmado, "token"=>$usuarioEmail->token, "token_exp"=>date("Y-m-d H:i:s", time()+3600)]);
+
+                    $usuario->update();
+
+                    $this->sendConfirmationEmail($userData[0]['email'], $tokenSesion);
+
+                }
+            } else {
+                $_SESSION['register'] = "token_invalid";
+                $this->pages->render('usuario/login');
             }
-
-        }
-        
-        
-
         } catch (Exception $e) {
             echo "Error al confirmar el registro: " . $e->getMessage();
             
         }
-
-        //$this->pages->render('usuario/confirmacion');
+    
+        $this->pages->render('usuario/login');
     }
 
 

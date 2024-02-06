@@ -23,6 +23,7 @@
         <h2>Características de la API</h2>
         <p>Con nuestra API de CS:GO, puedes acceder a información valiosa sobre todas las skins del juego, incluyendo precio de estas, detalles de desgaste, imágenes de las mismas y más.</p>
         <p>Integra fácilmente nuestros servicios en tu aplicación o sitio web y mantén a tus usuarios actualizados con los últimos datos de CS:GO.</p>
+        <p><b>Importante:</b> generar un token con una hora de tiempo para hacer consultas</p>
         <?php if (!isset($_SESSION['identity'])): ?>
         <a href="<?=BASE_URL?>usuario/login" class="api-link">Explora la documentación</a>
         <?php $_SESSION['register'] = 'login_required'?>

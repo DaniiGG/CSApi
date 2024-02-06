@@ -22,7 +22,7 @@
 <input type="email" name="data[email]" required/>
 
 <label for="password">Contraseña</label>
-<input type="pass" name="data[password]" required/>
+<input type="password" name="data[password]" required/>
 
 <input type="submit" value="Registrarse" />
         </form>

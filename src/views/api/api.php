@@ -81,7 +81,7 @@
   <div class="accordion-item">
     <h2 class="accordion-header">
       <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSix" aria-expanded="false" aria-controls="collapseThree">
-      <code>DELETE /delete</code> - Elimina una skin.
+      <code>DELETE /delete/{id}</code> - Elimina una skin.
       </button>
     </h2>
     <div id="collapseSix" class="accordion-collapse collapse" data-bs-parent="#accordionExample">

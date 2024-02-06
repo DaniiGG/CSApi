@@ -69,8 +69,8 @@ class Routes
 
 
 
-        Router::add('POST', 'usuario/confirmacion/', function () {
-            return (new UsuarioController())->confirmarRegistro2();
+        Router::add('GET', 'usuario/confirmacion/:token', function ($token) {
+            return (new UsuarioController())->confirmarRegistro2($token);
         });
 
         Router::add('GET', 'usuario/nuevoToken', function () {
